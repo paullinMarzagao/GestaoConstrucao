@@ -1,0 +1,324 @@
+1. Visão Geral
+Nome do Produto: Sistema Financeiro Construtora
+Objetivo: Desenvolver um software como serviço (SaaS) simples, na forma de um produto mínimo viável (MVP), para gerenciar o fluxo financeiro de uma construtora, com foco em criação, aprovação e gerenciamento de protocolos de pagamento, geração de arquivos remessa e controle de contas.
+Público-Alvo: Construtoras de pequeno e médio porte.
+Idioma: Português (100% do sistema e documentação).
+Escopo do MVP:  
+Gerenciamento de usuários com três níveis de acesso: Administrador, Operador e Cadastrador.  
+
+Criação, aprovação e gerenciamento de protocolos financeiros.  
+
+Geração de arquivos remessa compatíveis com o banco BTG.  
+
+Resolução de divergências via chamados.  
+
+Painel administrativo para controle de usuários e redefinição de senhas.
+2. Requisitos Funcionais
+2.1. Perfis de Usuário
+Administrador:  
+Aprova ou reprova protocolos elaborados pelos Cadastradores.  
+
+Gerencia usuários (Operadores e Cadastradores): criar, editar, excluir e redefinir senhas.  
+
+Acessa relatórios gerais (exemplo: status de protocolos, pagamentos pendentes).  
+
+Acessa painel administrativo do SaaS para gerenciar todos os usuários.
+Operador:  
+Faz upload de arquivos remessa e dá entrada no banco BTG.  
+
+Identifica divergências ou problemas nos protocolos e abre chamados vinculados.  
+
+Visualiza protocolos aprovados e seus detalhes.
+Cadastrador:  
+Cria protocolos com informações financeiras.  
+
+Anexa documentos (Nota Fiscal, Ordem de Compra, Boleto/PIX).  
+
+Visualiza apenas os próprios protocolos e seus status (pendente, aprovado, reprovado).
+2.2. Funcionalidades Principais
+2.2.1. Autenticação e Autorização
+Login com e-mail e senha.  
+
+Controle de acesso baseado em perfil (Role-Based Access Control).  
+
+Recuperação de senha via e-mail.
+2.2.2. Gerenciamento de Protocolos
+Criação (Cadastrador):  
+Formulário com campos:  
+Centro de Custo (seleção de lista pré-cadastrada).  
+
+Faturamento Direto (Sim/Não).  
+
+Entidade Pagadora (seleção de lista pré-cadastrada).  
+
+Dados de pagamento: valor, data de vencimento, tipo (Boleto/PIX).  
+
+Upload de arquivos: Nota Fiscal, Ordem de Compra, Boleto/PIX (formatos PDF ou JPG, máximo 5MB por arquivo).
+Validação de campos obrigatórios antes de salvar.
+Aprovação (Administrador):  
+Lista de protocolos pendentes com filtros (exemplo: data, Cadastrador, status).  
+
+Ações para aprovar ou reprovar, com campo opcional para justificar reprovação.  
+
+Notificação por e-mail ao Cadastrador sobre o status do protocolo.
+Visualização:  
+Painel com lista de protocolos, filtrável por status, data e Cadastrador.  
+
+Detalhamento do protocolo com todas as informações e documentos anexados.
+2.2.3. Geração de Arquivo Remessa
+Após aprovação, o sistema gera um arquivo remessa no formato CNAB 240, compatível com o banco BTG.  
+
+Download do arquivo pelo Operador.  
+
+Validação básica (exemplo: todos os campos obrigatórios preenchidos).
+2.2.4. Gerenciamento de Divergências
+Operador pode abrir chamado vinculado a um protocolo, com:  
+Descrição do problema.  
+
+Status do chamado (Aberto, Em Andamento, Resolvido).
+Notificação ao Cadastrador e Administrador sobre novo chamado.  
+
+Histórico de chamados visível no detalhe do protocolo.
+2.2.5. Integração com Banco BTG
+Upload manual do arquivo remessa pelo Operador no sistema do banco (sem API no MVP).  
+
+Registro no sistema da data de entrada do arquivo no banco.
+2.2.6. Painel Administrativo do SaaS
+Exclusivo para o Administrador.  
+
+Funcionalidades:  
+Listagem de todos os usuários (Administradores, Operadores, Cadastradores).  
+
+Filtros por nome, e-mail ou perfil.  
+
+Ações: criar, editar, excluir usuário e redefinir senha.  
+
+Redefinição de senha envia e-mail com link temporário para o usuário.
+2.3. Requisitos Não Funcionais
+Usabilidade: Interface simples, intuitiva e em português, com fluxos claros para cada perfil.  
+
+Segurança:  
+Criptografia de dados sensíveis (exemplo: senhas, dados de pagamento).  
+
+Uso de HTTPS para todas as comunicações.  
+
+Backup diário dos dados.
+Escalabilidade: Suportar até 50 usuários simultâneos e 1.000 protocolos por mês.  
+
+Performance: Tempo de resposta inferior a 2 segundos para operações comuns.  
+
+Disponibilidade: 99,5% de uptime.  
+
+Compatibilidade: Web-based, compatível com navegadores Chrome, Firefox e Edge (desktop).
+3. Fluxo do Usuário
+Cadastrador:  
+Faz login.  
+
+Cria protocolo, preenche dados e anexa documentos.  
+
+Submete protocolo para aprovação.  
+
+Recebe notificação sobre aprovação ou reprovação.
+Administrador:  
+Faz login.  
+
+Visualiza lista de protocolos pendentes.  
+
+Aprova ou reprova protocolos.  
+
+Gerencia usuários (adiciona, remove, edita, redefine senhas).  
+
+Acessa painel administrativo para controle geral.
+Operador:  
+Faz login.  
+
+Baixa arquivo remessa de protocolos aprovados.  
+
+Dá entrada no banco BTG.  
+
+Abre chamado em caso de divergências.  
+
+Acompanha status do chamado.
+4. Interface do Usuário
+Telas Principais:  
+Tela de login.  
+
+Dashboard (diferente por perfil):  
+Administrador: Lista de protocolos pendentes, gerenciamento de usuários, painel administrativo, relatórios.  
+
+Operador: Lista de protocolos aprovados, upload de remessa, chamados.  
+
+Cadastrador: Formulário de protocolo, lista de protocolos próprios.
+Detalhe do Protocolo: Informações, documentos, histórico de chamados.  
+
+Painel Administrativo: Gerenciamento de usuários e redefinição de senhas.
+Estilo: Design minimalista, com cores neutras, componentes do shadcn/ui e foco em usabilidade.  
+
+Componentes:  
+Tabelas filtráveis para listas.  
+
+Formulários com validação em tempo real.  
+
+Botões claros para ações (exemplo: "Aprovar", "Reprovar", "Baixar Remessa").
+5. Integrações
+Banco BTG: Geração de arquivo remessa no formato CNAB 240 (sem integração via API no MVP).  
+
+E-mail: Envio de notificações (exemplo: aprovação, reprovação, chamados, redefinição de senha).
+6. Tecnologias
+Frontend: React, Vite, shadcn/ui.  
+
+Backend: Node.js com Express.  
+
+Banco de Dados: PostgreSQL.  
+
+Modelo de IA: Gemini 2.0 Flash (usado para suporte no desenvolvimento).  
+
+Hospedagem: AWS (EC2 para servidores, S3 para armazenamento de arquivos).  
+
+Autenticação: JSON Web Tokens (JWT) para controle de acesso.  
+
+E-mail: SendGrid para notificações.
+7. Esquema do Banco de Dados
+Tabelas
+sql
+-- Tabela de Usuários
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    perfil VARCHAR(20) NOT NULL CHECK (perfil IN ('ADMINISTRADOR', 'OPERADOR', 'CADASTRADOR')),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Centros de Custo
+CREATE TABLE centros_custo (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    codigo VARCHAR(50) UNIQUE NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Entidades Pagadoras
+CREATE TABLE entidades_pagadoras (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cnpj VARCHAR(14) UNIQUE NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Protocolos
+CREATE TABLE protocolos (
+    id SERIAL PRIMARY KEY,
+    cadastrador_id INTEGER REFERENCES usuarios(id),
+    centro_custo_id INTEGER REFERENCES centros_custo(id),
+    entidade_pagadora_id INTEGER REFERENCES entidades_pagadoras(id),
+    faturamento_direto BOOLEAN NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    data_vencimento DATE NOT NULL,
+    tipo_pagamento VARCHAR(20) NOT NULL CHECK (tipo_pagamento IN ('BOLETO', 'PIX')),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('PENDENTE', 'APROVADO', 'REPROVADO')),
+    justificativa_reprovacao TEXT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Documentos
+CREATE TABLE documentos (
+    id SERIAL PRIMARY KEY,
+    protocolo_id INTEGER REFERENCES protocolos(id),
+    tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('NOTA_FISCAL', 'ORDEM_COMPRA', 'BOLETO_PIX')),
+    caminho_arquivo VARCHAR(255) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Chamados
+CREATE TABLE chamados (
+    id SERIAL PRIMARY KEY,
+    protocolo_id INTEGER REFERENCES protocolos(id),
+    operador_id INTEGER REFERENCES usuarios(id),
+    descricao TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('ABERTO', 'EM_ANDAMENTO', 'RESOLVIDO')),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Arquivos Remessa
+CREATE TABLE arquivos_remessa (
+    id SERIAL PRIMARY KEY,
+    protocolo_id INTEGER REFERENCES protocolos(id),
+    caminho_arquivo VARCHAR(255) NOT NULL,
+    data_entrada_banco TIMESTAMP,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+Relacionamentos
+Um usuário (Cadastrador) cria vários protocolos.  
+
+Um protocolo está associado a um centro de custo e uma entidade pagadora.  
+
+Um protocolo pode ter vários documentos (Nota Fiscal, Ordem de Compra, Boleto/PIX).  
+
+Um protocolo pode ter vários chamados abertos por um Operador.  
+
+Um protocolo pode gerar um arquivo remessa.
+8. Premissas e Restrições
+Premissas:  
+Usuários têm acesso à internet e navegadores modernos.  
+
+Banco BTG aceita arquivos CNAB 240 gerados manualmente.  
+
+Dados de Centro de Custo e Entidade Pagadora serão pré-cadastrados manualmente.
+Restrições:  
+Sem integração automática com o banco no MVP.  
+
+Suporte apenas em português.  
+
+Sem aplicativo mobile no MVP (apenas web).
+9. Métricas de Sucesso
+Adoção: 80% dos usuários da construtora utilizando o sistema em 3 meses.  
+
+Eficiência: Redução de 50% no tempo de processamento de protocolos (comparado ao processo manual).  
+
+Satisfação: Net Promoter Score (NPS) superior a 7 entre os usuários.  
+
+Conformidade: 100% dos arquivos remessa gerados sem erros de formato.
+10. Riscos e Mitigações
+Risco: Usuários com pouca familiaridade tecnológica.  
+Mitigação: Interface intuitiva e guia de uso no onboarding.
+Risco: Erros no formato do arquivo remessa.  
+Mitigação: Validação automática antes da geração.
+Risco: Sobrecarga do sistema com muitos protocolos.  
+Mitigação: Limite inicial de 1.000 protocolos por mês e testes de carga.
+11. Cronograma Estimado
+Fase 1 - Planejamento e Design (2 semanas):  
+Definição de wireframes e fluxos.  
+
+Validação com stakeholders.
+Fase 2 - Desenvolvimento (6 semanas):  
+Backend: Autenticação, gerenciamento de protocolos, geração de remessa.  
+
+Frontend: Telas e fluxos de usuário.  
+
+Testes unitários e de integração.
+Fase 3 - Testes e Ajustes (2 semanas):  
+Testes com usuários reais.  
+
+Correção de bugs.
+Fase 4 - Lançamento (1 semana):  
+Deploy em ambiente de produção.  
+
+Treinamento inicial para usuários.
+Total: 11 semanas.
+12. Próximos Passos (Pós-MVP)
+Integração via API com o banco BTG.  
+
+Relatórios avançados (exemplo: análise por Centro de Custo).  
+
+Suporte a múltiplas construtoras (multi-tenant).  
+
+Aplicativo mobile.  
+
+Automação de validação de documentos
+

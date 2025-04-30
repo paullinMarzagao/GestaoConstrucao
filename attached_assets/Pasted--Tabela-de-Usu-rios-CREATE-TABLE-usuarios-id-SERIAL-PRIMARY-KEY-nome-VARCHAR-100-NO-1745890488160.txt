@@ -1,0 +1,71 @@
+-- Tabela de Usuários
+CREATE TABLE usuarios (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    email VARCHAR(100) UNIQUE NOT NULL,
+    senha VARCHAR(255) NOT NULL,
+    perfil VARCHAR(20) NOT NULL CHECK (perfil IN ('ADMINISTRADOR', 'OPERADOR', 'CADASTRADOR')),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Centros de Custo
+CREATE TABLE centros_custo (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    codigo VARCHAR(50) UNIQUE NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Entidades Pagadoras
+CREATE TABLE entidades_pagadoras (
+    id SERIAL PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cnpj VARCHAR(14) UNIQUE NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Protocolos
+CREATE TABLE protocolos (
+    id SERIAL PRIMARY KEY,
+    cadastrador_id INTEGER REFERENCES usuarios(id),
+    centro_custo_id INTEGER REFERENCES centros_custo(id),
+    entidade_pagadora_id INTEGER REFERENCES entidades_pagadoras(id),
+    faturamento_direto BOOLEAN NOT NULL,
+    valor DECIMAL(10,2) NOT NULL,
+    data_vencimento DATE NOT NULL,
+    tipo_pagamento VARCHAR(20) NOT NULL CHECK (tipo_pagamento IN ('BOLETO', 'PIX')),
+    status VARCHAR(20) NOT NULL CHECK (status IN ('PENDENTE', 'APROVADO', 'REPROVADO')),
+    justificativa_reprovacao TEXT,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Documentos
+CREATE TABLE documentos (
+    id SERIAL PRIMARY KEY,
+    protocolo_id INTEGER REFERENCES protocolos(id),
+    tipo VARCHAR(50) NOT NULL CHECK (tipo IN ('NOTA_FISCAL', 'ORDEM_COMPRA', 'BOLETO_PIX')),
+    caminho_arquivo VARCHAR(255) NOT NULL,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Chamados
+CREATE TABLE chamados (
+    id SERIAL PRIMARY KEY,
+    protocolo_id INTEGER REFERENCES protocolos(id),
+    operador_id INTEGER REFERENCES usuarios(id),
+    descricao TEXT NOT NULL,
+    status VARCHAR(20) NOT NULL CHECK (status IN ('ABERTO', 'EM_ANDAMENTO', 'RESOLVIDO')),
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    atualizado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+-- Tabela de Arquivos Remessa
+CREATE TABLE arquivos_remessa (
+    id SERIAL PRIMARY KEY,
+    protocolo_id INTEGER REFERENCES protocolos(id),
+    caminho_arquivo VARCHAR(255) NOT NULL,
+    data_entrada_banco TIMESTAMP,
+    criado_em TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
